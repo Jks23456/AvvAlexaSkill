@@ -1,0 +1,32 @@
+{
+   "id":"",
+   "ver":"1.18",
+   "lang":"deu",
+   "auth":{
+      "type":"",
+      "aid":""
+   },
+   "client":{
+      "id":"AVV_AACHEN",
+      "type":"WEB",
+      "name":"webapp",
+      "l":"vs_avv"
+   },
+   "formatted":false,
+   "svcReqL":[
+      {
+         "meth":"LocMatch",
+         "req":{
+            "input":{
+               "field":"S",
+               "loc":{
+                  "name":"",
+                  "type":"S",
+                  "dist":1000
+               },
+               "maxLoc":7
+            }
+         }
+      }
+   ]
+}

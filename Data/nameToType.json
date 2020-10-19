@@ -1,0 +1,31 @@
+{
+  "RB": {
+    "type": "train",
+    "txt": "Bahn",
+    "line": ""
+  },
+
+  "ASE": {
+    "type": "tram",
+    "txt": "Aachener Straßenbahn und Energieversorgungs-AG",
+    "line": ""
+  },
+
+  "DB": {
+    "type": "train",
+    "txt": "Deutschebahn",
+    "line": ""
+  },
+
+  "BUS": {
+    "type": "bus",
+    "txt": "Bus",
+    "line": ""
+  },
+
+  "WALK": {
+    "type": "foot",
+    "txt": "zu Fusz",
+    "line": ""
+  }
+}
