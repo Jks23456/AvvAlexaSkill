@@ -1,31 +1,41 @@
 {
   "RB": {
     "type": "train",
-    "txt": "Bahn",
-    "line": ""
+    "txt": "Zug"
   },
 
   "ASE": {
     "type": "tram",
-    "txt": "Aachener Straßenbahn und Energieversorgungs-AG",
-    "line": ""
+    "txt": "Aachener Straszenbahn und Energieversorgungs-AG"
   },
 
   "DB": {
     "type": "train",
-    "txt": "Deutschebahn",
-    "line": ""
+    "txt": "Deutschenbahn"
   },
 
   "BUS": {
     "type": "bus",
-    "txt": "Bus",
-    "line": ""
+    "txt": "Bus"
   },
 
   "WALK": {
     "type": "foot",
-    "txt": "zu Fusz",
-    "line": ""
+    "txt": "zu Fusz"
+  },
+
+  "ICE": {
+    "type": "train",
+    "txt": "Intercity Express"
+  },
+
+  "IC": {
+    "type": "train",
+    "txt": "Intercity"
+  },
+
+  "S": {
+    "type": "train",
+    "txt": "S-Bahn"
   }
 }

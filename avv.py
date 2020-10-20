@@ -22,7 +22,6 @@ def searchForStation(pSearchString):
     r = requests.post("https://auskunft.avv.de/bin/mgate.exe?rnd=1602964183882", json=payload)
 
     data = r.json()
-    print(str(data).replace("True","true").replace("False","false"))
     if data["err"] != "OK":
         return None
 
@@ -52,7 +51,7 @@ def searchForStation(pSearchString):
     except:
         return None
 
-def getStationBoard(pBusStoppJson, pLength):
+def getStationBoard(pBusStoppJson):
     payload = json.loads(open("Templates/board.json").read())
     prepairPayload(payload)
 
@@ -61,49 +60,44 @@ def getStationBoard(pBusStoppJson, pLength):
 
     r = requests.post("https://auskunft.avv.de/bin/mgate.exe?rnd=1602964183882", json=payload)
 
-    con_json = {}
     data = r.json()
-    id = -1
+    print(str(data).replace("False", "false").replace("True", "true"))
+
+    ret_json = json.loads("{}")
+
     for set in data["svcResL"][0]["res"]["jnyL"]:
-        id += 1
-
-        tmp = {}
-        tmp["id"] = str(id)
-        tmp["haltestelle"] = set["dirTxt"]
-
-        tmp["ankunft"] = set["stbStop"]["dTimeS"]
-        if "dTimeR" in set["stbStop"]:
-            tmp["verspaetung"] = set["stbStop"]["dTimeR"]
-        print(str(set).replace("True","true").replace("False","false"))
-        plt = set["dirFlg"]
-        if plt in con_json.keys():
-            if len(con_json[plt].keys()) < pLength:
-                con_json[plt][str(len(con_json[plt].keys()))] = tmp
+        tmp = {"type": data["svcResL"][0]["res"]["common"]["prodL"][set["prodX"]],
+               "dirText": set["dirTxt"],
+               "dep": {"time": set["stbStop"]["dTimeS"],
+                       "delay": set["stbStop"]["dTimeS"],
+                       "platform": "None",
+                       "difPlatform":"None"
+                      }
+               }
+        if "dPlatfS" in set["stbStop"].keys():
+            tmp["dep"]["platform"] = set["stbStop"]["dPlatfS"]
+            tmp["dep"]["difPlatform"] = set["stbStop"]["dPlatfS"]
         else:
-            con_json[plt] = {}
-            con_json[plt][str(0)] = tmp
+            print(set["stbStop"].keys())
 
-    i = 0
-    busList = []
-    for set in data["svcResL"][0]["res"]["common"]["prodL"]:
-        if "pid" in set.keys():
-            busList.append(set)
+        if "dPlatfR" in set["stbStop"].keys():
+            tmp["dep"]["difPlatform"] = set["stbStop"]["dPlatfR"]
 
-    for plt in con_json:
-        for row in con_json[plt]:
-            obj = busList[int(con_json[plt][row]["id"])]
-            tmp = {}
-            tmp["name"] = obj["name"]
-            tmp["nummer"] = obj["number"]
-            if "prodCtx" in obj.keys() and "catOutL" in obj["prodCtx"].keys():
-                tmp["art"] = obj["prodCtx"]["catOutL"]
-            else:
-                tmp["art"] = ""
-            con_json[plt][row]["bus"] = tmp
+        if "dTimeR" in set["stbStop"].keys():
+            tmp["dep"]["delay"] = set["stbStop"]["dTimeR"]
 
-    return con_json
+        if "dPlatR" in set["stbStop"].keys():
+            tmp["dep"]["difPlatform"] = set["stbStop"]["dPlatR"]
 
-def getRoute(pBusStationJsonDep, pBusStationJsonArr, pLength):
+        if tmp["dep"]["platform"] not in ret_json.keys():
+            ret_json[tmp["dep"]["platform"]] = {}
+
+        ret_json[tmp["dep"]["platform"]][len(ret_json[tmp["dep"]["platform"]])] = tmp
+
+
+    print(ret_json)
+
+def getRoute(pBusStationJsonDep, pBusStationJsonArr):
     payload = json.loads(open("Templates/route.json").read())
     prepairPayload(payload)
     payload["svcReqL"][0]["req"]["depLocL"][0] = {"name" : pBusStationJsonDep["name"],
@@ -135,7 +129,20 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr, pLength):
 
     counter = 0
     for connection in data["svcResL"][0]["res"]["outConL"]:
-        conDic = {"dep": connection["dep"]["dTimeS"], "dur" : connection["dur"], "chg" : connection["chg"]}
+        add=True
+        print(str(connection).replace("False", "false").replace("True", "true"))
+        conDic = {"dep": connection["dep"]["dTimeS"], "dur" : "None", "chg" : ""}
+
+        if "dur" in connection.keys():
+            conDic["dur"] = connection["dur"]
+        else:
+            add = False
+
+        if "chg" in connection.keys():
+            conDic["chg"]=connection["chg"]
+        else:
+            add = False
+
         conDic["route"] = {}
         id = 0
         for conStep in connection["secL"]:
@@ -147,14 +154,16 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr, pLength):
                 print(icoX[conStep["icoX"]]["res"])
 
             if conStep["type"] == "JNY":
-                arr = {"name": "",
-                       "plattform": conStep["arr"]["aPlatfS"],
-                       "difPlattform": conStep["arr"]["aPlatfS"],
+                tmp["type"]["dirTxt"] = conStep["jny"]["dirTxt"]
+
+                arr = {"dirText": "",
+                       "platform": conStep["arr"]["aPlatfS"],
+                       "difPlatform": conStep["arr"]["aPlatfS"],
                        "time": conStep["arr"]["aTimeS"]
                        }
 
                 if "aPlatR" in conStep["arr"].keys():
-                    arr["difPlattform"] = conStep["arr"]["aPlatfR"]
+                    arr["difPlatform"] = conStep["arr"]["aPlatfR"]
 
                 if "aTimeR" in conStep["arr"].keys():
                     if len(conStep["arr"]["aTimeR"]) == 8:
@@ -162,14 +171,14 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr, pLength):
                     else:
                         arr["delTime"] = conStep["arr"]["aTimeR"]
 
-                dep = {"name": "",
-                       "plattform": conStep["dep"]["dPlatfS"],
-                       "difPlattform": conStep["dep"]["dPlatfS"],
+                dep = {"dirText": "",
+                       "platform": conStep["dep"]["dPlatfS"],
+                       "difPlatform": conStep["dep"]["dPlatfS"],
                        "time": conStep["dep"]["dTimeS"]
                        }
 
                 if "dPlatfR" in conStep["dep"].keys():
-                    dep["difPlattform"] = conStep["dep"]["dPlatfR"]
+                    dep["difPlatform"] = conStep["dep"]["dPlatfR"]
 
 
                 if "dTimeR" in conStep["dep"].keys():
@@ -181,10 +190,10 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr, pLength):
                 ctxRecon = str(conStep["jny"]["ctxRecon"]).split("@")
                 for s in ctxRecon:
                     if s.startswith("O="):
-                        if dep["name"] == "":
-                            dep["name"] = s[2:]
+                        if dep["dirText"] == "":
+                            dep["dirText"] = s[2:]
                         else:
-                            arr["name"] = s[2:]
+                            arr["dirText"] = s[2:]
                     elif s.startswith("$") and not s.startswith("$A="):
                         splt = s.split("$")
                         for i in splt:
@@ -200,32 +209,29 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr, pLength):
 
             elif conStep["type"] == "WALK":
                 tmp["dist"] = conStep["gis"]["dist"]
-                arr ={"name": "",
+                arr ={"dirText": "",
                       "time": conStep["arr"]["aTimeS"]
                       }
 
-                dep ={"name": "",
+                dep ={"dirText": "",
                       "time": conStep["dep"]["dTimeS"]
                       }
 
                 ctxRecon = conStep["gis"]["ctx"]
                 for s in str(ctxRecon).split("@"):
                     if s.startswith("O="):
-                        if dep["name"] == "":
-                            dep["name"] = s[2:]
+                        if dep["dirText"] == "":
+                            dep["dirText"] = s[2:]
                         else:
-                            arr["name"] = s[2:]
+                            arr["dirText"] = s[2:]
 
                 print([arr,dep])
 
             conDic["route"][str(id)] = tmp
             id+=1
-
-        ret_Json[str(counter)] = conDic
-        counter+=1
-
-        if counter == pLength:
-            break
+        if add:
+            ret_Json[str(counter)] = conDic
+            counter+=1
 
     return ret_Json
 
