@@ -53,8 +53,8 @@ class StationBoard(Menue):
 
             for i in lines:
                 if pIntent["return"]["msg"] == "":
-                    pIntent["return"]["msg"] +="<break time="3s"/> " + i
+                    pIntent["return"]["msg"] +="""<break time="3s"/> """ + i
                 else:
-                    pIntent["return"]["msg"] +="<break time="1s"/> +i
+                    pIntent["return"]["msg"] +="""<break time="1s"/>""" +i
         pIntent["return"]["msg"] += "</speak>"
         pIntent["isComplete"] = True
