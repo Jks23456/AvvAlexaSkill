@@ -3,8 +3,8 @@
     "station": "Haaren Denkmal",
     "maxItems": 3,
     "sentences": {"mainstation": "Haaren Markt",
-                  "newPlt": ["Von {0[pltName]} faehrt um {0[dep_hours]} Uhr {0[dep_minutes]} {0[name]} in richtung {0[dirText]} {0[del]}"],
-                  "fromPlt": [" Um {0[dep_hours]} Uhr {0[dep_minutes]} folgt dann {0[name]} in richtung {0[dirText]} {0[del]}"],
+                  "newPlt": ["Von {0[pltName]} faehrt um {0[dep_hours]} Uhr {0[dep_minutes]} {0[name]} in richtung {0[dirText]}{0[del]}"],
+                  "fromPlt": [" Um {0[dep_hours]} Uhr {0[dep_minutes]} folgt dann {0[name]} in richtung {0[dirText]}{0[del]}"],
                   "delMsg": ["... Heute mit einer Verspaetung von {0[del_minutes]} Minuten.","... Kommt Heute erst um {0[del_hours]} Uhr {0[del_minutes]}."],
                   "noPltInfo" : ["Keine Platform-Informationen Verfuegbar... Du musst dich vorort erkundigen..."],
                   "noPlt": [" Um {0[dep_hours]} Uhr {0[dep_minutes]} kommt der {0[name]} nach {0[dirText]} {0[del]}."]

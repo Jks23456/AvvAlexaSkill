@@ -10,4 +10,4 @@ if __name__ == '__main__':
     m = MainMenue()
     m.update(intentJson)
 
-    print(intentJson)
+    print(intentJson["return"]["msg"])

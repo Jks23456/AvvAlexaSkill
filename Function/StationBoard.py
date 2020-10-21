@@ -17,7 +17,7 @@ class StationBoard(Menue):
         sorKeys = sorted(data.keys())
         ret_msg = str("")
 
-
+        pIntent["return"]["msg"]="<speak>"
         for group in sorKeys:
             lines = []
             for element in data[group]:
@@ -53,8 +53,8 @@ class StationBoard(Menue):
 
             for i in lines:
                 if pIntent["return"]["msg"] == "":
-                    pIntent["return"]["msg"] = i
+                    pIntent["return"]["msg"] +="<break time="3s"/> " + i
                 else:
-                    pIntent["return"]["msg"] += i
-
+                    pIntent["return"]["msg"] +="<break time="1s"/> +i
+        pIntent["return"]["msg"] += "</speak>"
         pIntent["isComplete"] = True
