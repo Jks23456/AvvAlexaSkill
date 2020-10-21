@@ -93,9 +93,8 @@ def getStationBoard(pBusStoppJson):
             ret_json[tmp["dep"]["platform"]] = {}
 
         ret_json[tmp["dep"]["platform"]][len(ret_json[tmp["dep"]["platform"]])] = tmp
-
-
     print(ret_json)
+    return ret_json
 
 def getRoute(pBusStationJsonDep, pBusStationJsonArr):
     payload = json.loads(open("Templates/route.json").read())
@@ -119,18 +118,16 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr):
     r = requests.post("https://auskunft.avv.de/bin/mgate.exe?rnd=1602964183882", json=payload)
 
 
-    print(str(r.json()).replace("False", "false").replace("True", "true"))
+    #print(str(r.json()).replace("False", "false").replace("True", "true"))
 
     data = r.json()
-    icoX = data["svcResL"][0]["res"]["common"]["icoL"]
-    icoXTable = json.loads(open("Data/nameToType.json").read())
 
     ret_Json = json.loads("{}")
 
     counter = 0
     for connection in data["svcResL"][0]["res"]["outConL"]:
         add=True
-        print(str(connection).replace("False", "false").replace("True", "true"))
+        #print(str(connection).replace("False", "false").replace("True", "true"))
         conDic = {"dep": connection["dep"]["dTimeS"], "dur" : "None", "chg" : ""}
 
         if "dur" in connection.keys():
@@ -146,15 +143,10 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr):
         conDic["route"] = {}
         id = 0
         for conStep in connection["secL"]:
-            tmp={"type" : ""}
+            tmp = {"travel": conStep["type"], "type": ""}
 
-            if icoX[conStep["icoX"]]["res"] in icoXTable.keys():
-                tmp["type"] = icoXTable[icoX[conStep["icoX"]]["res"]].copy()
-            else:
-                print(icoX[conStep["icoX"]]["res"])
-
-            if conStep["type"] == "JNY":
-                tmp["type"]["dirTxt"] = conStep["jny"]["dirTxt"]
+            if tmp["travel"] == "JNY":
+                tmp["type"] = data["svcResL"][0]["res"]["common"]["prodL"][conStep["jny"]["prodX"]]
 
                 arr = {"dirText": "",
                        "platform": conStep["arr"]["aPlatfS"],
@@ -199,15 +191,10 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr):
                         for i in splt:
                             if i == "":
                                 splt.remove(i)
-
-                        if tmp["type"]["type"] == "bus":
-                            tmp["type"]["line"] = splt[2].replace(" ", "").replace("Bus", "")
-                        else:
-                            tmp["type"]["line"] = splt[2].replace(" ", "")
                     tmp["dep"] = dep
                     tmp["arr"] = arr
 
-            elif conStep["type"] == "WALK":
+            elif tmp["travel"] == "WALK":
                 tmp["dist"] = conStep["gis"]["dist"]
                 arr ={"dirText": "",
                       "time": conStep["arr"]["aTimeS"]
@@ -234,6 +221,13 @@ def getRoute(pBusStationJsonDep, pBusStationJsonArr):
             counter+=1
 
     return ret_Json
+
+def convertTime(pTime):
+    if len(pTime) > 6:
+        pTime = pTime[2:]
+    h = pTime[0:2]
+    m = pTime[2:4]
+    return [int(h),int(m)]
 
 
 

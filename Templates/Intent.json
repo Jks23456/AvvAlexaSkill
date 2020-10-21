@@ -1,0 +1,14 @@
+{
+  "intent": "",
+  "isComplete": false,
+
+  "input": {
+    "msg": "",
+    "args": {}
+  },
+
+  "return": {
+    "type": "",
+    "msg": ""
+  }
+}

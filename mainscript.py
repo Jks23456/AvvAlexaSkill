@@ -1,6 +1,13 @@
 import avv
 import json
 
+from Function.MainMenue import MainMenue
+
 if __name__ == '__main__':
-    print(avv.getStationBoard(avv.searchForStation("Haaren denkmal")['obj']))
-    print(avv.getRoute(avv.searchForStation("Aachen schanz bf")['obj'], avv.searchForStation("Haaren markt")['obj']))
+    intentJson = json.loads(open("Templates/Intent.json").read())
+    intentJson["intent"] = "HaltIntent"
+
+    m = MainMenue()
+    m.update(intentJson)
+
+    print(intentJson)
