@@ -1,10 +1,10 @@
 {
   "intent": "",
   "isComplete": false,
+  "err": false,
 
   "input": {
-    "msg": "",
-    "args": {}
+    "msg": ""
   },
 
   "return": {

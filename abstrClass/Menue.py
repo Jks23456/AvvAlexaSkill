@@ -3,6 +3,7 @@ class Menue:
     def __init__(self):
         self.nextNode = None
         self.mainMsg = ""
+        self.nextFunktion = None
 
     def update(self, pIntent):
         if self.nextNode != None:
@@ -12,7 +13,11 @@ class Menue:
                 pIntent["isComplete"] = False
                 self.input(pIntent)
         else:
-            self.input(pIntent)
+            if self.nextFunktion == None:
+                self.input(pIntent)
+            else:
+                self.nextFunktion(pIntent)
+                self.nextFunktion = None
 
     def openMenue(self, pMenueClass):
         self.nextNode = pMenueClass

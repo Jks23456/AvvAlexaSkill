@@ -4,10 +4,15 @@ import json
 from Function.MainMenue import MainMenue
 
 if __name__ == '__main__':
-    intentJson = json.loads(open("Templates/Intent.json").read())
-    intentJson["intent"] = "HaltIntent"
+    intentJson = json.loads(open("Templates/intent.json").read())
+    main = MainMenue()
 
-    m = MainMenue()
-    m.update(intentJson)
-
-    print(intentJson["return"]["msg"])
+    while(True):
+        intent = intentJson.copy()
+        print("Intent:")
+        intent["intent"] = input()
+        print("Input:")
+        intent["input:"] = input()
+        main.update(intent)
+        print(intent)
+        print(" ")

@@ -5,11 +5,11 @@ import random
 from abstrClass.Menue import Menue
 
 
-class StationBoard(Menue):
+class Board(Menue):
 
     def __init__(self):
         super().__init__()
-        self.options = json.loads(open("Data/option.json").read())["stationBoard"]
+        self.options = json.loads(open("Data/option.json").read())["board"]
         self.searchJson = avv.searchForStation(self.options["station"])
 
     def input(self, pIntent):
@@ -50,9 +50,13 @@ class StationBoard(Menue):
                     break
                 else:
                     lines.append(random.choice(self.options["sentences"]["fromPlt"]).format(data_lex))
-
+            first = True
             for i in lines:
-                if pIntent["return"]["msg"] == "":
+                if pIntent["return"]["msg"] == "<speak>":
+                    pIntent["return"]["msg"] += i
+                    first = False
+                elif first:
+                    first = False
                     pIntent["return"]["msg"] +="""<break time="1.5s"/> """ + i
                 else:
                     pIntent["return"]["msg"] +="""<break time="0.5s"/>""" +i
