@@ -1,9 +1,7 @@
 {
   "board": {
-    "station": "Haaren Denkmal",
     "maxItems": 3,
     "sentences": {
-      "mainstation": "Haaren Markt",
       "newPlt": [
         "Von {0[pltName]} faehrt um {0[dep_hours]} Uhr {0[dep_minutes]} {0[name]} in richtung {0[dirText]}{0[del]}"
       ],

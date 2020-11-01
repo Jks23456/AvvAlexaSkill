@@ -54,17 +54,11 @@ def searchForStation(pSearchString):
 def getStationBoard(pBusStoppJson):
     payload = json.loads(open("Templates/board.json").read())
     prepairPayload(payload)
-
     payload["svcReqL"][0]["req"]["stbLoc"]["name"] = pBusStoppJson["name"]
     payload["svcReqL"][0]["req"]["stbLoc"]["lid"] = pBusStoppJson["lid"]
-
     r = requests.post("https://auskunft.avv.de/bin/mgate.exe?rnd=1602964183882", json=payload)
-
     data = r.json()
-    print(str(data).replace("False", "false").replace("True", "true"))
-
     ret_json = json.loads("{}")
-
     for set in data["svcResL"][0]["res"]["jnyL"]:
         tmp = {"type": data["svcResL"][0]["res"]["common"]["prodL"][set["prodX"]],
                "dirText": set["dirTxt"],
@@ -93,7 +87,6 @@ def getStationBoard(pBusStoppJson):
             ret_json[tmp["dep"]["platform"]] = {}
 
         ret_json[tmp["dep"]["platform"]][len(ret_json[tmp["dep"]["platform"]])] = tmp
-    print(ret_json)
     return ret_json
 
 def getRoute(pBusStationJsonDep, pBusStationJsonArr):
