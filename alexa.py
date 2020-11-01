@@ -23,7 +23,7 @@ def initData():
     global fileSet
     global fileInit
 
-    fileSet = json.loads(open("User/option.json").read())
+    fileSet = json.loads(open("Data/option.json").read())
     file = None
     if not path.exists("User/{0}.json".format(session.user.userId)):
         file = open("User/{0}.json".format(session.user.userId), "a")
