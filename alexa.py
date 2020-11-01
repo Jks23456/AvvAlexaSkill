@@ -39,6 +39,7 @@ def initData():
 
 @ask.launch
 def start_skill():
+    global flag
     if not fileInit:
         initData()
 
@@ -77,8 +78,11 @@ def HaltIntent(STATION, TRANSPORT, ARTIKEL):
         initData()
 
     station = None
-    if fileOpt["favorite"]=="None":
-        station = avv.searchForStation("Aachen Hbf")
+    if STATION != None:
+        station = avv.searchForStation(STATION)
+    elif fileOpt["favorite"] == "None":
+        flag = "setFavStation"
+        return question("Du hast keinen Favoriten angegeben... Welche Station möchtest du als Favorit auswählen?")
     else:
         station = avv.searchForStation(fileOpt["favorite"])
 
@@ -90,7 +94,7 @@ def HaltIntent(STATION, TRANSPORT, ARTIKEL):
         return statement("Das konnte ich leider nicht verstehen!")
 
     sorKeys = sorted(data.keys())
-    ret_msg = "<speak>"
+    ret_msg = "<speak>"+random.choice(fileSet["intro"].replace(station["obj"]["name"]))
     for group in sorKeys:
         lines = []
         for element in data[group]:
@@ -155,7 +159,7 @@ def StationIntent(STATION):
 
     if flag == "setFavStation":
         fileOpt["favorite"] = STATION
-        with open("Data/{0}.json".format(session.user.userId), 'w') as outfile:
+        with open("User/{0}.json".format(session.user.userId), 'w') as outfile:
             json.dump(fileOpt, outfile)
         return statement("Okey... Ich setze {} als Favorite".format(STATION))
     return statement("Das konnte ich leider nicht verstehen!")

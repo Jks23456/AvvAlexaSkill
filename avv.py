@@ -87,6 +87,8 @@ def getStationBoard(pBusStoppJson):
             ret_json[tmp["dep"]["platform"]] = {}
 
         ret_json[tmp["dep"]["platform"]][len(ret_json[tmp["dep"]["platform"]])] = tmp
+
+    print(ret_json)
     return ret_json
 
 def getRoute(pBusStationJsonDep, pBusStationJsonArr):

@@ -2,6 +2,10 @@
   "board": {
     "maxItems": 3,
     "sentences": {
+      "intro": [
+        "Folgendes habe ich für {} gefunden:"
+      ],
+
       "newPlt": [
         "Von {0[pltName]} faehrt um {0[dep_hours]} Uhr {0[dep_minutes]} {0[name]} in richtung {0[dirText]}{0[del]}"
       ],
